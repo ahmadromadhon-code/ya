@@ -1141,17 +1141,19 @@ footer {
 }
 
 /* Vertical Fullscreen Overlay */
-.video-player-container.vertical-fullscreen-active {
-    position: fixed;
-    inset: 0;
+.video-player-container.vertical-fullscreen-active,
+.video-player-container:fullscreen,
+.video-player-container:-webkit-full-screen {
+    position: fixed !important;
+    inset: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
     aspect-ratio: auto !important;
-    z-index: 99999;
-    background: #000;
-    border-radius: 0;
-    border: none;
-    margin: 0;
+    z-index: 99999 !important;
+    background: #000 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
 }
 
 /* Hide close button by default */
@@ -1181,7 +1183,9 @@ footer {
 }
 
 /* Show close button in vertical fullscreen */
-.video-player-container.vertical-fullscreen-active .btn-vertical-close {
+.video-player-container.vertical-fullscreen-active .btn-vertical-close,
+.video-player-container:fullscreen .btn-vertical-close,
+.video-player-container:-webkit-full-screen .btn-vertical-close {
     display: block;
 }
 

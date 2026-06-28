@@ -695,17 +695,56 @@ if (importBtn && importFileInput) {
     });
 }
 
-// Toggle Vertical Fullscreen (Viewport Height Overlay)
+// Toggle Vertical Fullscreen (Viewport Height Overlay & Browser Fullscreen)
 window.toggleVerticalFullscreen = function() {
     const container = document.getElementById('video-player-container');
     if (container) {
         container.classList.toggle('vertical-fullscreen-active');
         
-        // Adjust body scroll lock
         if (container.classList.contains('vertical-fullscreen-active')) {
             document.body.style.overflow = 'hidden';
+            
+            // Enter browser-level fullscreen on the container div
+            if (container.requestFullscreen) {
+                container.requestFullscreen().catch(() => {});
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            } else if (container.mozRequestFullScreen) {
+                container.mozRequestFullScreen();
+            } else if (container.msRequestFullscreen) {
+                container.msRequestFullscreen();
+            }
         } else {
             document.body.style.overflow = 'hidden'; // keep locked as long as modal is open
+            
+            // Exit browser-level fullscreen
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
         }
     }
 };
+
+// Handle Browser Fullscreen Exit Event (via swipe/back gestures)
+function onFullscreenChange() {
+    const container = document.getElementById('video-player-container');
+    if (container) {
+        const isCurrentlyFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        if (!isCurrentlyFullscreen && container.classList.contains('vertical-fullscreen-active')) {
+            container.classList.remove('vertical-fullscreen-active');
+        }
+    }
+}
+
+document.addEventListener('fullscreenchange', onFullscreenChange);
+document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+document.addEventListener('mozfullscreenchange', onFullscreenChange);
+document.addEventListener('MSFullscreenChange', onFullscreenChange);
