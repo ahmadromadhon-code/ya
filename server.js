@@ -172,3 +172,5 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`💻 Local:   http://localhost:${PORT}`);
     console.log(`📱 Network: http://${localIP}:${PORT}`);
 });
+
+module.exports = app;
