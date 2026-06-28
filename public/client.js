@@ -29,6 +29,7 @@ const prevBtnBottom = document.getElementById('prev-btn-bottom');
 const nextBtnBottom = document.getElementById('next-btn-bottom');
 const pageNumBottom = document.getElementById('page-num-bottom');
 const paginationBottom = document.getElementById('pagination-bottom');
+const genreSelect = document.getElementById('genre-select');
 
 // LocalStorage helpers for Bookmarks and History
 function getBookmarks() {
@@ -183,6 +184,12 @@ filterTabs.forEach(tab => {
         filterTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
 
+        // Reset genre select if active
+        if (genreSelect) {
+            genreSelect.value = '';
+            genreSelect.classList.remove('active');
+        }
+
         // Update state and reload
         currentCategory = tab.dataset.category || '';
         const label = tab.dataset.label;
@@ -192,6 +199,35 @@ filterTabs.forEach(tab => {
         fetchData();
     });
 });
+
+// Genre Filter Listener
+if (genreSelect) {
+    genreSelect.addEventListener('change', (e) => {
+        const selectedGenre = e.target.value;
+        if (!selectedGenre) {
+            // If placeholder is selected, click the "Semua" default tab
+            const defaultTab = document.querySelector('.filter-tab[data-category=""]');
+            if (defaultTab) {
+                defaultTab.click();
+            }
+            return;
+        }
+
+        // Deactivate normal category tabs
+        filterTabs.forEach(t => t.classList.remove('active'));
+        
+        // Mark select dropdown as active tab
+        genreSelect.classList.add('active');
+
+        // Set state and fetch
+        currentCategory = selectedGenre;
+        const selectedText = genreSelect.options[genreSelect.selectedIndex].text;
+        currentMode = 'latest';
+        currentPage = 1;
+        sectionTitle.textContent = `Genre: ${selectedText}`;
+        fetchData();
+    });
+}
 
 // Core Fetch Logic
 async function fetchData() {
