@@ -13,7 +13,7 @@ $ npm install
 ## Usage
 
 ```sh
-const Scrapper = require('./NekopoiScrapper');
+const Scrapper = require('./Scrapper');
 
 // Latest Release
 NekopoiScrapper.getLatest()
