@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NekoPoi Scrapper Client</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header>
+            <div class="header-content">
+                <div class="logo" onclick="window.location.reload()" style="cursor: pointer;">
+                    <span class="logo-icon">🌸</span>
+                    <h1 class="logo-text">Neko<span>Poi</span></h1>
+                    <span class="badge">Scrapper</span>
+                </div>
+                
+                <!-- Search bar -->
+                <form id="search-form" class="search-box">
+                    <input type="text" id="search-input" placeholder="Cari anime / JAV favorit..." required>
+                    <button type="submit" aria-label="Search">
+                        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <!-- Main Content Section -->
+        <main>
+            <!-- Title Header -->
+            <div class="main-header">
+                <h2 id="section-title">Rilis Terbaru</h2>
+                <div class="header-actions" id="header-actions" style="display: none; margin-left: auto; margin-right: 1.5rem;">
+                    <button id="clear-history-btn" class="btn-danger" style="display: none;">🧹 Hapus Riwayat</button>
+                </div>
+                <div class="pagination-controls" id="pagination">
+                    <button id="prev-btn" class="btn-icon" disabled aria-label="Previous Page">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <span id="page-num">Halaman 1</span>
+                    <button id="next-btn" class="btn-icon" aria-label="Next Page">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Filter Tabs -->
+            <div class="filter-tabs" id="filter-tabs">
+                <button class="filter-tab active" data-category="" data-label="Semua">🏠 Semua</button>
+                <button class="filter-tab" data-category="https://nekopoi.care/category/hentai/" data-label="Hentai">🎌 Hentai</button>
+                <button class="filter-tab" data-category="https://nekopoi.care/category/2d-animation/" data-label="2D Animation">✏️ 2D Animation</button>
+                <button class="filter-tab" data-category="https://nekopoi.care/category/3d-hentai/" data-label="3D Hentai">🎮 3D Hentai</button>
+                <button class="filter-tab" data-category="https://nekopoi.care/category/jav/" data-label="JAV">🇯🇵 JAV</button>
+                <button class="filter-tab" data-category="https://nekopoi.care/category/jav-cosplay/" data-label="JAV Cosplay">💃 JAV Cosplay</button>
+                <button class="filter-tab" data-category="bookmarks" data-label="Penanda">🔖 Penanda</button>
+                <button class="filter-tab" data-category="history" data-label="Riwayat">🕒 Riwayat</button>
+            </div>
+
+            <!-- Loader -->
+            <div class="loader-container" id="loader">
+                <div class="poi-spinner"></div>
+                <p>Mengambil data dari server...</p>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="cards-grid" id="cards-grid">
+                <!-- Dynamically populated card structures -->
+            </div>
+
+            <!-- Error/Empty State -->
+            <div class="error-container" id="error-container">
+                <div class="error-icon">❌</div>
+                <h3 id="error-title">Gagal Memuat Data</h3>
+                <p id="error-message">Tidak dapat terhubung ke server atau terjadi masalah koneksi.</p>
+                <button onclick="window.location.reload()" class="btn-primary">Muat Ulang</button>
+            </div>
+        </main>
+
+        <!-- Footer Section -->
+        <footer>
+            <p>NekoPoi Scrapper Client &copy; 2026. Made with 💖 by Antigravity.</p>
+        </footer>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal-backdrop" id="modal-backdrop">
+        <div class="modal-card">
+            <button class="modal-close" id="modal-close" aria-label="Close modal">&times;</button>
+            
+            <div class="modal-content" id="modal-content">
+                <!-- Dynamically populated post details -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Anti-popup / Anti-redirect Protection -->
+    <script>
+        // Block window.open() popups from the page level
+        const _origOpen = window.open.bind(window);
+        window.open = function(url, target, features) {
+            // Allow only if explicitly called by trusted user interaction (e.g. download buttons)
+            // Blocked by default to prevent ad popups from iframes
+            return null;
+        };
+
+        // Re-focus window if it loses focus (popup opened behind)
+        let _videoPlaying = false;
+        window.addEventListener('blur', function() {
+            if (_videoPlaying) {
+                setTimeout(function() { window.focus(); }, 100);
+            }
+        });
+
+        // Track video player state
+        document.addEventListener('click', function(e) {
+            const iframe = document.getElementById('poi-video-player');
+            if (iframe && iframe.contains(e.target)) {
+                _videoPlaying = true;
+            }
+        });
+
+        // Mark video as playing when modal opens
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                if (e.target.closest && e.target.closest('.video-player-container')) {
+                    _videoPlaying = true;
+                }
+            });
+        });
+    </script>
+    <!-- Client Script -->
+    <script src="client.js"></script>
+</body>
+</html>

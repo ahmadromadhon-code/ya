@@ -1,0 +1,5 @@
+.idea/
+node_modules/
+NekopoiScrapper/node_modules/
+.env
+*.log
