@@ -1,6 +1,6 @@
 # Scrapper
 
-*Scrapper for nekopoi*
+*Scrapper*
 
 [![pipeline status](https://gitlab.com/moepoi/NekopoiScrapper/badges/master/pipeline.svg)](https://gitlab.com/moepoi/NekopoiScrapper/-/commits/master)
 
