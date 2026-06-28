@@ -25,6 +25,10 @@ const themeSelect = document.getElementById('theme-select');
 const exportBtn = document.getElementById('export-btn');
 const importBtn = document.getElementById('import-btn');
 const importFileInput = document.getElementById('import-file-input');
+const prevBtnBottom = document.getElementById('prev-btn-bottom');
+const nextBtnBottom = document.getElementById('next-btn-bottom');
+const pageNumBottom = document.getElementById('page-num-bottom');
+const paginationBottom = document.getElementById('pagination-bottom');
 
 // LocalStorage helpers for Bookmarks and History
 function getBookmarks() {
@@ -145,9 +149,23 @@ prevBtn.addEventListener('click', () => {
     }
 });
 
+prevBtnBottom.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        fetchData();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+});
+
 nextBtn.addEventListener('click', () => {
     currentPage++;
     fetchData();
+});
+
+nextBtnBottom.addEventListener('click', () => {
+    currentPage++;
+    fetchData();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 modalClose.addEventListener('click', closeModal);
@@ -186,6 +204,7 @@ async function fetchData() {
     if (currentCategory === 'bookmarks' || currentCategory === 'history') {
         const pagination = document.getElementById('pagination');
         if (pagination) pagination.style.display = 'none';
+        if (paginationBottom) paginationBottom.style.display = 'none';
         if (headerActions) {
             headerActions.style.display = currentCategory === 'history' ? 'block' : 'none';
             if (clearHistoryBtn) clearHistoryBtn.style.display = currentCategory === 'history' ? 'inline-block' : 'none';
@@ -210,6 +229,7 @@ async function fetchData() {
     // Normal online endpoints
     const pagination = document.getElementById('pagination');
     if (pagination) pagination.style.display = 'flex';
+    if (paginationBottom) paginationBottom.style.display = 'flex';
     if (headerActions) headerActions.style.display = 'none';
     if (clearHistoryBtn) clearHistoryBtn.style.display = 'none';
 
@@ -503,6 +523,10 @@ function updatePaginationControls(hasData) {
     pageNum.textContent = `Halaman ${currentPage}`;
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = !hasData;
+
+    if (pageNumBottom) pageNumBottom.textContent = `Halaman ${currentPage}`;
+    if (prevBtnBottom) prevBtnBottom.disabled = currentPage === 1;
+    if (nextBtnBottom) nextBtnBottom.disabled = !hasData;
 }
 
 // View Utilities

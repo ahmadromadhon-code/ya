@@ -1133,3 +1133,9 @@ footer {
         flex-wrap: wrap;
     }
 }
+
+/* Bottom Pagination styling */
+.pagination-controls.bottom {
+    margin: 2.5rem auto 0 auto;
+    width: max-content;
+}
