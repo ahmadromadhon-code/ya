@@ -31,6 +31,16 @@
                         </svg>
                     </button>
                 </form>
+
+                <!-- Theme Selector -->
+                <div class="theme-selector">
+                    <select id="theme-select" aria-label="Pilih Tema">
+                        <option value="dark">🏠 Default Dark</option>
+                        <option value="sakura">🌸 Sakura Pink</option>
+                        <option value="oled">🕶️ OLED Black</option>
+                        <option value="cyberpunk">⚡ Cyberpunk Neon</option>
+                    </select>
+                </div>
             </div>
         </header>
 
@@ -39,8 +49,11 @@
             <!-- Title Header -->
             <div class="main-header">
                 <h2 id="section-title">Rilis Terbaru</h2>
-                <div class="header-actions" id="header-actions" style="display: none; margin-left: auto; margin-right: 1.5rem;">
+                <div class="header-actions" id="header-actions">
+                    <button id="export-btn" class="btn-secondary" title="Ekspor Penanda & Riwayat ke JSON">📤 Ekspor</button>
+                    <button id="import-btn" class="btn-secondary" title="Impor Penanda & Riwayat dari JSON">📥 Impor</button>
                     <button id="clear-history-btn" class="btn-danger" style="display: none;">🧹 Hapus Riwayat</button>
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
                 </div>
                 <div class="pagination-controls" id="pagination">
                     <button id="prev-btn" class="btn-icon" disabled aria-label="Previous Page">

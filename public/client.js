@@ -21,6 +21,10 @@ const modalBackdrop = document.getElementById('modal-backdrop');
 const modalClose = document.getElementById('modal-close');
 const modalContent = document.getElementById('modal-content');
 const clearHistoryBtn = document.getElementById('clear-history-btn');
+const themeSelect = document.getElementById('theme-select');
+const exportBtn = document.getElementById('export-btn');
+const importBtn = document.getElementById('import-btn');
+const importFileInput = document.getElementById('import-file-input');
 
 // LocalStorage helpers for Bookmarks and History
 function getBookmarks() {
@@ -102,6 +106,13 @@ window.deleteHistory = function(link) {
 
 // Initialize App
 window.addEventListener('DOMContentLoaded', () => {
+    // Apply saved theme early
+    const savedTheme = localStorage.getItem('poi_theme') || 'dark';
+    if (themeSelect) {
+        themeSelect.value = savedTheme;
+    }
+    applyTheme(savedTheme);
+
     fetchData();
     
     if (clearHistoryBtn) {
@@ -529,3 +540,87 @@ window.switchStream = function(btn, url) {
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 };
+
+// Theme Helper Function
+function applyTheme(themeName) {
+    document.documentElement.classList.remove('theme-sakura', 'theme-oled', 'theme-cyberpunk');
+    if (themeName && themeName !== 'dark') {
+        document.documentElement.classList.add(`theme-${themeName}`);
+    }
+}
+
+// Theme Change Event Listener
+if (themeSelect) {
+    themeSelect.addEventListener('change', (e) => {
+        const theme = e.target.value;
+        localStorage.setItem('poi_theme', theme);
+        applyTheme(theme);
+    });
+}
+
+// Backup (Export) Event Listener
+if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+        try {
+            const data = {
+                bookmarks: getBookmarks(),
+                history: getHistory(),
+                theme: localStorage.getItem('poi_theme') || 'dark',
+                exportedAt: new Date().toISOString()
+            };
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nekopoi_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            alert('Gagal mengekspor data: ' + err.message);
+        }
+    });
+}
+
+// Restore (Import) Event Listener
+if (importBtn && importFileInput) {
+    importBtn.addEventListener('click', () => {
+        importFileInput.click();
+    });
+
+    importFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                const data = JSON.parse(event.target.result);
+                
+                if (data && (Array.isArray(data.bookmarks) || Array.isArray(data.history))) {
+                    if (Array.isArray(data.bookmarks)) {
+                        saveBookmarks(data.bookmarks);
+                    }
+                    if (Array.isArray(data.history)) {
+                        saveHistory(data.history);
+                    }
+                    if (data.theme) {
+                        localStorage.setItem('poi_theme', data.theme);
+                    }
+                    
+                    alert('Data berhasil diimpor! Halaman akan dimuat ulang.');
+                    window.location.reload();
+                } else {
+                    alert('Format file cadangan tidak valid (data Bookmarks atau History tidak ditemukan).');
+                }
+            } catch (err) {
+                alert('Gagal membaca file: ' + err.message);
+            }
+            importFileInput.value = '';
+        };
+        reader.readAsText(file);
+    });
+}
