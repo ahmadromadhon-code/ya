@@ -1,4 +1,4 @@
-# Nekopoi Scrapper
+# Scrapper
 
 *Scrapper for nekopoi*
 
