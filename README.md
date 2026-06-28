@@ -13,6 +13,3 @@ $ npm install
 
 ```
 
-## Credit
-
-Moe Poi ~ / [@moepoi](https://github.com/moepoi)
