@@ -4,7 +4,7 @@
   "description": "Scrapper for nekopoi",
   "main": "./NekopoiScrapper/index.js",
   "scripts": {
-    "start": "node ./example.js",
+    "start": "node server.js",
     "dev": "node start-dev.js"
   },
   "repository": {
