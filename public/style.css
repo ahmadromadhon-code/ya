@@ -1139,3 +1139,47 @@ footer {
     margin: 2.5rem auto 0 auto;
     width: max-content;
 }
+
+/* Vertical Fullscreen Overlay */
+.video-player-container.vertical-fullscreen-active {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    background: #000;
+    border-radius: 0;
+    border: none;
+    margin: 0;
+}
+
+/* Hide close button by default */
+.btn-vertical-close {
+    display: none;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 1.8rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    line-height: 2.5rem;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100000;
+    transition: var(--transition);
+}
+
+.btn-vertical-close:hover {
+    background: var(--accent-color);
+    border-color: transparent;
+    transform: scale(1.05);
+}
+
+/* Show close button in vertical fullscreen */
+.video-player-container.vertical-fullscreen-active .btn-vertical-close {
+    display: block;
+}

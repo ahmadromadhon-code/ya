@@ -365,13 +365,14 @@ function renderModalContent(info) {
         streamsHTML = `
             <div class="modal-stream-section">
                 <h3>Putar Online</h3>
-                <div class="video-player-container">
+                <div class="video-player-container" id="video-player-container">
                     <iframe id="poi-video-player"
                         src="${escapeHTML(info.streams[0].url)}"
                         allowfullscreen
                         allow="autoplay; fullscreen; encrypted-media"
                         referrerpolicy="no-referrer"
                     ></iframe>
+                    <button class="btn-vertical-close" onclick="toggleVerticalFullscreen()" aria-label="Keluar Vertikal Penuh">&times;</button>
                 </div>
                 <div class="stream-tabs">
                     ${info.streams.map((stream, idx) => `
@@ -379,6 +380,9 @@ function renderModalContent(info) {
                             ${escapeHTML(stream.name)}
                         </button>
                     `).join('')}
+                    <button class="stream-tab-btn btn-vertical-toggle" onclick="toggleVerticalFullscreen()" style="margin-left: auto; background: rgba(0, 240, 255, 0.1); border-color: rgba(0, 240, 255, 0.3); color: var(--text-main);">
+                        📱 Vertikal Penuh
+                    </button>
                 </div>
             </div>
         `;
@@ -516,6 +520,12 @@ function closeModal() {
     if (player) {
         player.src = '';
     }
+    
+    // Reset vertical fullscreen if active
+    const container = document.getElementById('video-player-container');
+    if (container) {
+        container.classList.remove('vertical-fullscreen-active');
+    }
 }
 
 // Pagination Helpers
@@ -648,3 +658,18 @@ if (importBtn && importFileInput) {
         reader.readAsText(file);
     });
 }
+
+// Toggle Vertical Fullscreen (Viewport Height Overlay)
+window.toggleVerticalFullscreen = function() {
+    const container = document.getElementById('video-player-container');
+    if (container) {
+        container.classList.toggle('vertical-fullscreen-active');
+        
+        // Adjust body scroll lock
+        if (container.classList.contains('vertical-fullscreen-active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'hidden'; // keep locked as long as modal is open
+        }
+    }
+};
